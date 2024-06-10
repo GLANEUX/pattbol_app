@@ -8,13 +8,14 @@ const SignUpScreen = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const { authContext } = React.useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
   const handleSignUp = async () => {
     setLoading(true);
-    await authContext.signUp({ username, email, password });
+    await authContext.signUp({ username, email, password, confirmPassword });
     setLoading(false);
   };
   
@@ -37,6 +38,13 @@ const SignUpScreen = () => {
         placeholder="Mot de passe"
         value={password}
         onChangeText={setPassword}
+        secureTextEntry
+        style={styles.input}
+      />
+            <TextInput
+        placeholder="Mot de passe"
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
         secureTextEntry
         style={styles.input}
       />
