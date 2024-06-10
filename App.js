@@ -2,9 +2,9 @@ import React, { useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AuthProvider, AuthContext } from './components/AuthContext';
-import SignInScreen from './components/SignInScreen';
-import SignUpScreen from './components/SignUpScreen';
-import HomeScreen from './components/HomeScreen';
+import SignInScreen from './components/pages/SignInScreen';
+import SignUpScreen from './components/pages/SignUpScreen';
+import HomeScreen from './components/pages/HomeScreen';
 import { ActivityIndicator, View } from 'react-native';
 
 const Stack = createStackNavigator();

@@ -1,37 +1,23 @@
-// File:  ./components/SignUpScreen.js
-import React from 'react';
+import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text, Alert } from 'react-native';
-import { AuthContext } from './AuthContext';
+import { AuthContext } from '../AuthContext';
 import { useNavigation } from '@react-navigation/native';
+import LoadingIndicator from '../LoadingIndicator';
 
 const SignUpScreen = () => {
-  const [username, setUsername] = React.useState('');
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const { authContext } = React.useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
   const handleSignUp = async () => {
-    try {
-      // Remplacez cette URL par l'URL de votre API d'inscription
-      const response = await fetch("https://api.pattbol.fr/users/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password }),
-      });
-
-      if (response.ok) {
-        Alert.alert('Inscription réussie', 'Vous êtes maintenant inscrit', [
-          { text: 'OK', onPress: () => navigation.navigate('SignIn') }
-        ]);
-      } else {
-        const errorResult = await response.json();
-        Alert.alert('Échec de l\'inscription', errorResult.error);
-      }
-    } catch (error) {
-      Alert.alert('Échec de l\'inscription', 'Une erreur est survenue. Veuillez réessayer.');
-    }
+    setLoading(true);
+    await authContext.signUp({ username, email, password });
+    setLoading(false);
   };
+  
 
   return (
     <View style={styles.container}>
@@ -55,6 +41,7 @@ const SignUpScreen = () => {
         style={styles.input}
       />
       <Button title="S'inscrire" onPress={handleSignUp} />
+      {loading && <LoadingIndicator source={require('../../assets/favicon.png')} />}
       <Text style={styles.text}>
         Vous avez déjà un compte ?
         <Text style={{ color: 'blue' }} onPress={() => navigation.navigate('SignIn')}> Connectez-vous ici </Text>
