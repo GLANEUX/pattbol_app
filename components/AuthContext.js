@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
             try {
                 userToken = await SecureStore.getItemAsync('userToken');
             } catch (e) {
-                console.error('Échec du chargement du jeton utilisateur', e);
+                console.error('Échec du chargement des informations utilisateur', e);
             }
             dispatch({ type: 'RESTORE_TOKEN', token: userToken });
         };
@@ -65,16 +65,12 @@ export const AuthProvider = ({ children }) => {
                         await SecureStore.setItemAsync('userToken', result.token);
                         dispatch({ type: 'SIGN_IN', token: result.token });
                     } else {
-                        try {
-                            const errorResult = await response.json();
-                            if (errorResult.error) {
-                                Alert.alert('Échec de la connexion', errorResult.error);
-                            } if (errorResult.errors[0].message) {
-                                Alert.alert('Échec de la connexion', errorResult.errors[0].message);
-                            } else {
-                                Alert.alert('Échec de la connexion', 'Une erreur s\'est produite. Veuillez réessayer.');
-                            }
-                        } catch {
+                        const errorResult = await response.json();
+                        if (errorResult.error) {
+                            Alert.alert('Échec de la connexion', errorResult.error);
+                        } else if (errorResult.errors[0].message) {
+                            Alert.alert('Échec de la connexion', errorResult.errors[0].message);
+                        } else {
                             Alert.alert('Échec de la connexion', 'Une erreur s\'est produite. Veuillez réessayer.');
                         }
                     }
@@ -101,7 +97,7 @@ export const AuthProvider = ({ children }) => {
                         const errorResult = await response.json();
                         if (errorResult.error) {
                             Alert.alert('Échec de l\'inscription', errorResult.error);
-                        } if (errorResult.errors[0].message) {
+                        } else if (errorResult.errors[0].message) {
                             Alert.alert('Échec de l\'inscription', errorResult.errors[0].message);
                         } else {
                             Alert.alert('Échec de l\'inscription', 'Une erreur s\'est produite. Veuillez réessayer.');

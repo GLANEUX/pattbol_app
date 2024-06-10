@@ -1,12 +1,11 @@
-// File:  ./components/HomeScreen.js
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, StyleSheet, FlatList, Alert } from 'react-native';
+import { View, Text, Button, StyleSheet, Alert } from 'react-native';
 import { AuthContext } from '../AuthContext';
 import { useNavigation } from '@react-navigation/native';
 
 const HomeScreen = () => {
   const { authContext, state } = React.useContext(AuthContext);
-  const [users, setUsers] = useState([]);
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
 
@@ -15,9 +14,20 @@ const HomeScreen = () => {
       // Rediriger vers la page de connexion si aucun token n'est disponible
       navigation.navigate('SignIn');
     } else {
-      const fetchUsers = async () => {
+      
+      const fetchUser = async () => {
         try {
-          const response = await fetch('https://api.pattbol.fr/users', {
+
+          const teuserId = await fetch(`https://api.pattbol.fr/users/user/id`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `${state.userToken}`
+            }
+          });
+          const userId = await teuserId.json();
+
+          const response = await fetch(`https://api.pattbol.fr/users/${userId.id}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -26,11 +36,11 @@ const HomeScreen = () => {
           });
 
           if (response.ok) {
-            const usersData = await response.json();
-            setUsers(usersData);
+            const userData = await response.json();
+            setUser(userData);
           } else {
             const errorData = await response.json();
-            Alert.alert('Error', errorData.message || 'Failed to fetch users');
+            Alert.alert('Error', errorData.message || errorData.error || 'Failed to fetch user data');
           }
         } catch (error) {
           Alert.alert('Error', 'An error occurred. Please try again.');
@@ -39,17 +49,9 @@ const HomeScreen = () => {
         }
       };
 
-      fetchUsers();
+      fetchUser();
     }
-  }, [state.userToken]);
-
-  const renderItem = ({ item }) => (
-    <View style={styles.userItem}>
-      <Text>Username: {item.username}</Text>
-      <Text>Email: {item.email}</Text>
-      <Text>Role: {item.role}</Text>
-    </View>
-  );
+  }, [state.userToken, navigation]);
 
   return (
     <View style={styles.container}>
@@ -58,11 +60,13 @@ const HomeScreen = () => {
       {loading ? (
         <Text>Loading...</Text>
       ) : (
-        <FlatList
-          data={users}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={renderItem}
-        />
+        user && (
+          <View style={styles.userItem}>
+            <Text>Username: {user.username}</Text>
+            <Text>Email: {user.email}</Text>
+            <Text>Role: {user.role}</Text>
+          </View>
+        )
       )}
     </View>
   );
