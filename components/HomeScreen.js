@@ -1,5 +1,4 @@
 // File:  ./components/HomeScreen.js
-
 import React, { useEffect, useState } from 'react';
 import { View, Text, Button, StyleSheet, FlatList, Alert } from 'react-native';
 import { AuthContext } from './AuthContext';
