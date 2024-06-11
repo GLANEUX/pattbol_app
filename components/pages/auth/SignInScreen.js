@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
-import { AuthContext } from '../AuthContext';
+import { View, TextInput, Button, StyleSheet, Text, Alert } from 'react-native';
+import { AuthContext } from '../../hooks/AuthContext';
 import { useNavigation } from '@react-navigation/native';
-import LoadingIndicator from '../LoadingIndicator';
-
+import LoadingIndicator from '../../common/LoadingIndicator';
 const SignInScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -11,16 +10,18 @@ const SignInScreen = () => {
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    if (state.userToken) {
-      navigation.navigate('Home');
-    }
-  }, [state.userToken, navigation]);
+
 
   const handleSignIn = async () => {
     setLoading(true);
-    await authContext.signIn({ email, password });
-    setLoading(false);
+    try {
+      await authContext.signIn({ email, password });
+    } catch (error) {
+      Alert.alert('Échec de la connexion', 'Une erreur s\'est produite. Veuillez réessayer.');
+      authContext.signOut();
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -39,7 +40,7 @@ const SignInScreen = () => {
         style={styles.input}
       />
       <Button title="Se connecter" onPress={handleSignIn} />
-      {loading && <LoadingIndicator source={require('../../assets/favicon.png')} />}
+      {loading && <LoadingIndicator />}
       <Text style={styles.text}>
         Vous n'avez pas de compte ?
         <Text style={{ color: 'blue' }} onPress={() => navigation.navigate('SignUp')}> Inscrivez-vous ici </Text>

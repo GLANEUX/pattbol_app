@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, StyleSheet, Image } from 'react-native';
+import { View, Animated, StyleSheet, Image } from 'react-native';
 
-const RotatingLogo = ({ source, size = 200 }) => {
+const LoadingIndicator = () => {
   const rotateValue = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -23,17 +23,26 @@ const RotatingLogo = ({ source, size = 200 }) => {
   });
 
   return (
-    <Animated.View style={[styles.container, { transform: [{ rotate }] }]}>
-      <Image source={source} style={{ width: size, height: size, resizeMode: 'contain' }} />
-    </Animated.View>
+    <View style={styles.overlay}>
+      <Animated.View style={{ transform: [{ rotate }] }}>
+        <Image source={require('../../assets/favicon.png')} style={{ width: 100, height: 100, resizeMode: 'contain' }} />
+      </Animated.View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // semi-transparent background
+    zIndex: 1000, // ensure the loading indicator is on top
   },
 });
 
-export default RotatingLogo;
+export default LoadingIndicator;

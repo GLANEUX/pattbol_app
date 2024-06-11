@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text, Alert } from 'react-native';
-import { AuthContext } from '../AuthContext';
+import { AuthContext } from '../../hooks/AuthContext';
 import { useNavigation } from '@react-navigation/native';
-import LoadingIndicator from '../LoadingIndicator';
+import LoadingIndicator from '../../common/LoadingIndicator';
 
 const SignUpScreen = () => {
   const [username, setUsername] = useState('');
@@ -13,9 +13,18 @@ const SignUpScreen = () => {
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
+
+  
   const handleSignUp = async () => {
     setLoading(true);
-    await authContext.signUp({ username, email, password, confirmPassword });
+    try {
+      await authContext.signUp({ username, email, password, confirmPassword });
+    } catch (error) {
+      Alert.alert('Échec de l\'inscription', 'Une erreur s\'est produite. Veuillez réessayer.');
+      authContext.signOut();
+    } finally {
+      setLoading(false);
+    }
     setLoading(false);
   };
   
@@ -49,7 +58,7 @@ const SignUpScreen = () => {
         style={styles.input}
       />
       <Button title="S'inscrire" onPress={handleSignUp} />
-      {loading && <LoadingIndicator source={require('../../assets/favicon.png')} />}
+      {loading && <LoadingIndicator />}
       <Text style={styles.text}>
         Vous avez déjà un compte ?
         <Text style={{ color: 'blue' }} onPress={() => navigation.navigate('SignIn')}> Connectez-vous ici </Text>
