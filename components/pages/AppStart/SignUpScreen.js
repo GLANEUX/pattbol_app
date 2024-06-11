@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useLayoutEffect  } from 'react';
 import { View, TextInput, Button, StyleSheet, Text, Alert } from 'react-native';
 import { AuthContext } from '../../hooks/AuthContext';
 import { useNavigation } from '@react-navigation/native';
@@ -14,7 +14,17 @@ const SignUpScreen = () => {
   const navigation = useNavigation();
 
 
-  
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitleAlign: 'center', // Aligner le titre au centre
+      headerLeft: () => (
+        <Text onPress={() => navigation.goBack()} style={styles.cancelText}>Annuler</Text>
+      ),
+    });
+  }, [navigation]);
+
+
+
   const handleSignUp = async () => {
     setLoading(true);
     try {
@@ -83,6 +93,10 @@ const styles = StyleSheet.create({
   text: {
     marginTop: 16,
     textAlign: 'center',
+  },
+  cancelText: {
+    marginLeft: 16, // Ajouter de l'espace à gauche
+    color: 'orange', // Couleur orange
   },
 });
 

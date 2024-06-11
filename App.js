@@ -3,14 +3,22 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AuthProvider, AuthContext } from './components/hooks/AuthContext';
-import SignInScreen from './components/pages/auth/SignInScreen';
-import SignUpScreen from './components/pages/auth/SignUpScreen';
-import HomeScreen from './components/pages/connected/HomeScreen';
-import AccountScreen from './components/pages/connected/AccountScreen';
-import OfflineScreen from './components/pages/OfflineScreen';
 import { ActivityIndicator, View } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
+
+import SignInScreen from './components/pages/AppStart/SignInScreen';
+import SignUpScreen from './components/pages/AppStart/SignUpScreen';
+import IntroScreen from './components/pages/AppStart/IntroScreen';
+
+import HomeScreen from './components/pages/connected/HomeScreen';
+import AccountScreen from './components/pages/connected/AccountScreen';
+
+import OfflineScreen from './components/pages/OfflineScreen';
 import LoadingIndicator from './components/common/LoadingIndicator';
+
+
+
+
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -38,6 +46,8 @@ const AppNavigator = () => {
     <Stack.Navigator>
       {state.userToken == null ? (
         <>
+              <Stack.Screen name="IntroScreen" component={IntroScreen}   options={{ headerShown: false }} />
+
           <Stack.Screen name="SignIn" component={SignInScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
         </>
