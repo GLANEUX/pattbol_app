@@ -10,7 +10,7 @@ import AccountScreen from './components/pages/connected/AccountScreen';
 import OfflineScreen from './components/pages/OfflineScreen';
 import { ActivityIndicator, View } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
-import { useFonts } from './fonts'; // Importer la fonction de chargement des polices
+import LoadingIndicator from './components/common/LoadingIndicator';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -29,7 +29,7 @@ const AppNavigator = () => {
   if (state.isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" />
+        <LoadingIndicator />
       </View>
     );
   }
@@ -50,15 +50,8 @@ const AppNavigator = () => {
 
 const App = () => {
   const [isConnected, setIsConnected] = useState(true);
-  const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  useEffect(() => {
-    const loadFonts = async () => {
-      await useFonts();
-      setFontsLoaded(true);
-    };
-    loadFonts();
-  }, []);
   useEffect(() => {
     const checkInternetConnectivity = async () => {
       const netInfoState = await NetInfo.fetch();
@@ -73,14 +66,18 @@ const App = () => {
   }, []);
 
   const handleRefresh = async () => {
+    setIsRefreshing(true); // Début de l'actualisation
     const netInfoState = await NetInfo.fetch();
     setIsConnected(netInfoState.isConnected);
+    setTimeout(() => {
+      setIsRefreshing(false); // Fin de l'actualisation après un délai
+    }, 2000); // Délai de 2 secondes
   };
 
-  if (!fontsLoaded) {
+  if (isRefreshing) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" />
+         <LoadingIndicator />
       </View>
     );
   }
