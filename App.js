@@ -16,7 +16,8 @@ import AccountScreen from './components/pages/connected/AccountScreen';
 import OfflineScreen from './components/pages/OfflineScreen';
 import LoadingIndicator from './components/common/LoadingIndicator';
 
-
+import EditUserScreen from './components/pages/connected/EditUserScreen';
+import EditPasswordScreen from './components/pages/connected/EditPasswordScreen';
 
 
 const Stack = createStackNavigator();
@@ -52,7 +53,11 @@ const AppNavigator = () => {
           <Stack.Screen name="SignUp" component={SignUpScreen} />
         </>
       ) : (
+        <>
         <Stack.Screen name="Main" component={MainTabNavigator} options={{ headerShown: false }} />
+        <Stack.Screen name="EditUserScreen" component={EditUserScreen} options={{ title: 'Modifier l\'utilisateur' }} />
+        <Stack.Screen name="EditPasswordScreen" component={EditPasswordScreen} options={{ title: 'Modifier le mot de passe' }} />
+        </>
       )}
     </Stack.Navigator>
   );

@@ -55,14 +55,15 @@ export const AuthProvider = ({ children }) => {
               method: 'GET',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `${state.userToken}`,
+                'Authorization': `${userToken}`,
               },
             });
+  
             if (!response.ok) {
-              authContext.signOut(); // Use authContext to call signOut
+              authContext.signOut(); 
             } 
           } catch (error) {
-            authContext.signOut(); // Use authContext to call signOut
+            authContext.signOut(); 
           }
         }
       } catch (e) {
@@ -88,8 +89,8 @@ export const AuthProvider = ({ children }) => {
             dispatch({ type: 'SIGN_IN', token: result.token});
           } else {
             const errorResult = await response.json();
-            if (errorResult.error) {
-              Alert.alert('Échec de la connexion', errorResult.error);
+            if (errorResult.message) {
+              Alert.alert('Échec de la connexion', errorResult.message);
             } else if (errorResult.errors[0].message) {
               Alert.alert('Échec de la connexion', errorResult.errors[0].message);
             } else {
@@ -119,8 +120,8 @@ export const AuthProvider = ({ children }) => {
             dispatch({ type: 'SIGN_IN', token: result.token });
           } else {
             const errorResult = await response.json();
-            if (errorResult.error) {
-              Alert.alert('Échec de l\'inscription', errorResult.error);
+            if (errorResult.message) {
+              Alert.alert('Échec de l\'inscription', errorResult.message);
             } else if (errorResult.errors[0].message) {
               Alert.alert('Échec de l\'inscription', errorResult.errors[0].message);
             } else {
