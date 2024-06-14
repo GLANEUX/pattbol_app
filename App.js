@@ -19,6 +19,11 @@ import LoadingIndicator from './components/common/LoadingIndicator';
 import EditUserScreen from './components/pages/connected/EditUserScreen';
 import EditPasswordScreen from './components/pages/connected/EditPasswordScreen';
 
+import SearchScreen from './components/pages/connected/SearchScreen'; 
+import ProductDetailScreen from './components/pages/connected/ProductDetailScreen';
+
+import CategoryListScreen from './components/pages/connected/CategoryListScreen';
+import CategoryProductsScreen from './components/pages/connected/CategoryProductsScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -28,6 +33,8 @@ const MainTabNavigator = () => {
     <Tab.Navigator>
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Account" component={AccountScreen} />
+      <Tab.Screen name="Search" component={SearchScreen} />
+      <Tab.Screen name="Category" component={CategoryListScreen} />
     </Tab.Navigator>
   );
 };
@@ -57,6 +64,11 @@ const AppNavigator = () => {
         <Stack.Screen name="Main" component={MainTabNavigator} options={{ headerShown: false }} />
         <Stack.Screen name="EditUserScreen" component={EditUserScreen} options={{ title: 'Modifier l\'utilisateur' }} />
         <Stack.Screen name="EditPasswordScreen" component={EditPasswordScreen} options={{ title: 'Modifier le mot de passe' }} />
+        <Stack.Screen name="SearchScreen" component={SearchScreen} options={{ title: 'Search Products' }} /> 
+        <Stack.Screen name="ProductDetailScreen" component={ProductDetailScreen} options={{ title: 'Product Details' }} />
+        <Stack.Screen name="CategoryListScreen" component={CategoryListScreen} />
+        <Stack.Screen name="CategoryProductsScreen" component={CategoryProductsScreen} />
+
         </>
       )}
     </Stack.Navigator>
