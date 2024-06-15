@@ -21,9 +21,11 @@ import EditPasswordScreen from './components/pages/connected/EditPasswordScreen'
 
 import SearchScreen from './components/pages/connected/SearchScreen'; 
 import ProductDetailScreen from './components/pages/connected/ProductDetailScreen';
+import ScannerScreen from './components/pages/connected/ScannerScreen';
 
 import CategoryListScreen from './components/pages/connected/CategoryListScreen';
 import CategoryProductsScreen from './components/pages/connected/CategoryProductsScreen';
+
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -35,6 +37,7 @@ const MainTabNavigator = () => {
       <Tab.Screen name="Account" component={AccountScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="Category" component={CategoryListScreen} />
+      <Tab.Screen name="Scanner" component={ScannerScreen} />
     </Tab.Navigator>
   );
 };
@@ -68,6 +71,7 @@ const AppNavigator = () => {
         <Stack.Screen name="ProductDetailScreen" component={ProductDetailScreen} options={{ title: 'Product Details' }} />
         <Stack.Screen name="CategoryListScreen" component={CategoryListScreen} />
         <Stack.Screen name="CategoryProductsScreen" component={CategoryProductsScreen} />
+        <Stack.Screen name="ScannerScreen" component={ScannerScreen} />
 
         </>
       )}

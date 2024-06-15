@@ -49,7 +49,6 @@ export const AuthProvider = ({ children }) => {
       let userToken;
       try {
 
-        if (userToken) {
           try {
             userToken = await SecureStore.getItemAsync('userToken');
 
@@ -67,7 +66,7 @@ export const AuthProvider = ({ children }) => {
           } catch (error) {
             authContext.signOut(); 
           }
-        }
+        
       } catch (e) {
         console.error('Échec du chargement des informations utilisateur', e);
       }
