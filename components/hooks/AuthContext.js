@@ -48,9 +48,11 @@ export const AuthProvider = ({ children }) => {
     const bootstrapAsync = async () => {
       let userToken;
       try {
-        userToken = await SecureStore.getItemAsync('userToken');
+
         if (userToken) {
           try {
+            userToken = await SecureStore.getItemAsync('userToken');
+
             const response = await fetch('https://api.pattbol.fr/users/user/id', {
               method: 'GET',
               headers: {
