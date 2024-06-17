@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet, Alert, TouchableOpacity, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from 'react-native-vision-camera';
 
@@ -10,8 +10,9 @@ const ScannerScreen = ({ navigation }) => {
   // Get the camera device (back camera)
   const device = useCameraDevice('back');
 
-  // State to control barcode scanning availability
+  // State to control barcode scanning availability and result handling
   const [canScan, setCanScan] = useState(true);
+  const [popupMessage, setPopupMessage] = useState(null);
 
   // Use the code scanner hook to configure barcode scanning
   const codeScanner = useCodeScanner({
@@ -20,13 +21,7 @@ const ScannerScreen = ({ navigation }) => {
       // Check if codes array is not empty and scanning is allowed
       if (codes.length > 0 && canScan) {
         const scannedCode = codes[0]?.value;
-        showAlert(scannedCode);
-
-        // Prevent multiple scans within 5 seconds
-        setCanScan(false);
-        setTimeout(() => {
-          setCanScan(true);
-        }, 3000); // 5000 milliseconds = 5 seconds
+        handleBarcodeScan(scannedCode);
       }
     },
   });
@@ -47,19 +42,48 @@ const ScannerScreen = ({ navigation }) => {
     }
   };
 
-  // Show alert with barcode value
-  const showAlert = (value) => {
-    Alert.alert(
-      'Code-barres détecté',
-      `Code: ${value}`,
-      [
-        {
-          text: 'OK',
-          onPress: () => {}, // Optionally, you can handle onPress event
+  // Function to handle barcode scan
+  const handleBarcodeScan = async (scannedCode) => {
+    try {
+      // API endpoint URL
+      const apiUrl = `https://api.pattbol.fr/products/scan/${scannedCode}`;
+
+      // Token for authorization
+      const token = 'YOUR_AUTH_TOKEN'; // Replace with your actual authorization token
+
+      // Fetch data from API
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          Authorization: `${token}`,
+          'Content-Type': 'application/json',
         },
-      ],
-      { cancelable: false }
-    );
+      });
+
+      // Parse JSON response
+      const data = await response.json();
+
+      // Handle API response based on result
+      if (data.result && data.result.id) {
+        // Product found, navigate to product detail screen
+        navigation.navigate('ProductDetailScreen', { productId: data.result.id });
+      } else {
+        // No product found message
+        setPopupMessage('Aucun produit trouvé pour ce code barre.');
+      }
+
+      // Prevent multiple scans within 5 seconds
+      setCanScan(false);
+      setTimeout(() => {
+        setCanScan(true);
+        setPopupMessage(null); // Clear popup message after 5 seconds
+      }, 5000); // 5000 milliseconds = 5 seconds
+
+    } catch (error) {
+      console.error('Error scanning barcode:', error);
+      // Handle error
+      Alert.alert('Erreur', 'Une erreur est survenue lors du scan du code-barres.');
+    }
   };
 
   // Render content based on camera device availability
@@ -79,6 +103,11 @@ const ScannerScreen = ({ navigation }) => {
         device={device}
         isActive={true}
       />
+      {popupMessage && (
+        <View style={styles.popup}>
+          <Text>{popupMessage}</Text>
+        </View>
+      )}
     </SafeAreaView>
   );
 };
@@ -95,6 +124,17 @@ const styles = StyleSheet.create({
     color: 'red',
     textAlign: 'center',
     marginTop: 20,
+  },
+  popup: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    right: 20,
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
   },
 });
 
