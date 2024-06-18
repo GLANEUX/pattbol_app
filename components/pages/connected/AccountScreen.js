@@ -23,6 +23,8 @@ const AccountScreen = () => {
         fontSize: 30,
         color: colors.darkgreen
       },
+      headerTitle: 'Mon Compte', // Supprime le titre
+
       headerStyle: {
         backgroundColor: 'white', // Changer la couleur de fond du header
       },
