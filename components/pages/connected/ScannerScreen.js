@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View, StyleSheet, Alert, TouchableOpacity, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from 'react-native-vision-camera';
+import { AuthContext } from '../../hooks/AuthContext';
 
 const ScannerScreen = ({ navigation }) => {
   // Camera permission hooks
@@ -13,6 +14,9 @@ const ScannerScreen = ({ navigation }) => {
   // State to control barcode scanning availability and result handling
   const [canScan, setCanScan] = useState(true);
   const [popupMessage, setPopupMessage] = useState(null);
+
+  // Get the auth context to access the user token
+  const { state } = useContext(AuthContext);
 
   // Use the code scanner hook to configure barcode scanning
   const codeScanner = useCodeScanner({
@@ -48,14 +52,11 @@ const ScannerScreen = ({ navigation }) => {
       // API endpoint URL
       const apiUrl = `https://api.pattbol.fr/products/scan/${scannedCode}`;
 
-      // Token for authorization
-      const token = 'YOUR_AUTH_TOKEN'; // Replace with your actual authorization token
-
       // Fetch data from API
       const response = await fetch(apiUrl, {
-        method: 'POST',
+        method: 'GET',
         headers: {
-          Authorization: `${token}`,
+          Authorization: `${state.userToken}`,
           'Content-Type': 'application/json',
         },
       });
