@@ -103,7 +103,7 @@ export const AuthProvider = ({ children }) => {
         }
       },
       signOut: async () => {
-        Alert.alert('Vous êtes déconnectez');
+        // Alert.alert('Vous êtes déconnectez');
         await SecureStore.deleteItemAsync('userToken');
         dispatch({ type: 'SIGN_OUT' });
 

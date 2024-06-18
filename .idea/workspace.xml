@@ -6,7 +6,33 @@
   <component name="ChangeListManager">
     <list default="true" id="937260d0-7028-4d9a-bef0-df2c83810f01" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/pages/connected/ScannerScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/pages/connected/ScannerScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/adaptive-icon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/favicon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/fonts/Router Extralight.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/fonts/Router Light.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/fonts/Router Medium.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/fonts/Router Thin.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/fonts/TT Milks Script.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/icon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/splash.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/styles/style.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/common/LoadingIndicator.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/common/LoadingIndicator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/hooks/AuthContext.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/hooks/AuthContext.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/pages/AppStart/IntroScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/pages/AppStart/IntroScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/pages/AppStart/SignInScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/pages/AppStart/SignInScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/pages/AppStart/SignUpScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/pages/AppStart/SignUpScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/pages/OfflineScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/pages/OfflineScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/pages/connected/AccountScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/pages/connected/AccountScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/pages/connected/CategoryListScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/pages/connected/CategoryListScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/pages/connected/CategoryProductsScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/pages/connected/CategoryProductsScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/pages/connected/EditPasswordScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/pages/connected/EditPasswordScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/pages/connected/EditUserScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/pages/connected/EditUserScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/pages/connected/HomeScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/pages/connected/HomeScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/pages/connected/SearchScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/pages/connected/SearchScreen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fonts.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,17 +56,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;apk&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/oglan/OneDrive/Documents/DEVWEB/pattbol_app&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "apk",
+    "last_opened_file_path": "C:/Users/oglan/OneDrive/Documents/DEVWEB/pattbol_app",
+    "settings.editor.selected.configurable": "AndroidSdkUpdater"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="Unnamed" type="AndroidRunConfigurationType" factoryName="Android App" nameIsGenerated="true">
       <option name="DEPLOY" value="true" />

@@ -1,8 +1,11 @@
-import React, { useEffect, useState, useLayoutEffect  } from 'react';
-import { View, TextInput, Button, StyleSheet, Text, Alert } from 'react-native';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
+import { View, TextInput, TouchableOpacity, StyleSheet, Text, Alert } from 'react-native';
 import { AuthContext } from '../../hooks/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import LoadingIndicator from '../../common/LoadingIndicator';
+import globalStyles from '../../../assets/styles/globalStyles';
+import colors from '../../../assets/styles/colors';
+import { setStatusBarBackgroundColor } from 'expo-status-bar';
 const SignInScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -10,13 +13,19 @@ const SignInScreen = () => {
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
-
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitleAlign: 'center', // Aligner le titre au centre
+      headerTitleAlign: 'center', 
       headerLeft: () => (
-        <Text onPress={() => navigation.goBack()} style={styles.cancelText}>Annuler</Text>
+        <Text onPress={() => navigation.goBack()} style={globalStyles.cancelText}>Annuler</Text>
       ),
+      headerTitleStyle: {
+        fontFamily: 'RouterMedium', 
+        color: colors.darkgreen
+            },
+            headerStyle: {
+              backgroundColor: colors.lightgrey, // Changer la couleur de fond du header
+            },
     });
   }, [navigation]);
 
@@ -36,51 +45,57 @@ const SignInScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={globalStyles.container}>
       <TextInput
-        placeholder="Email"
+        placeholder="Addresse e-mail"
         value={email}
         onChangeText={setEmail}
-        style={styles.input}
+        style={globalStyles.input}
+        placeholderTextColor={colors.darkgrey}
+ 
       />
       <TextInput
         placeholder="Mot de passe"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        style={styles.input}
+        style={globalStyles.input}
+        placeholderTextColor={colors.darkgrey}
+
       />
-      <Button title="Se connecter" onPress={handleSignIn} />
+      <TouchableOpacity style={styles.button} onPress={handleSignIn}>
+        <Text style={globalStyles.buttonText}>Connexion</Text>
+      </TouchableOpacity>
       {loading && <LoadingIndicator />}
-      <Text style={styles.text}>
-        Vous n'avez pas de compte ?
-        <Text style={{ color: 'blue' }} onPress={() => navigation.navigate('SignUp')}> Inscrivez-vous ici </Text>
-      </Text>
+      <Text style={styles.text}>Vous n'avez pas de compte ?</Text>
+      <Text style={styles.textlink} onPress={() => navigation.navigate('Inscription')}>Inscrivez-vous</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 16,
-  },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 12,
-    paddingLeft: 8,
-  },
+  button:{
+    ...globalStyles.button,
+    marginTop:15,
+    paddingHorizontal:0,
+    width: '75%'
+  },   
+
   text: {
     marginTop: 16,
     textAlign: 'center',
+    fontFamily: 'RouterMedium',
+    fontSize: 14,
+    textAlignVertical: 'center',
+    color: colors.darkgrey
   },
-  cancelText: {
-    marginLeft: 16, // Ajouter de l'espace à gauche
-    color: 'orange', // Couleur orange
-  },
+
+  textlink: {
+    color: colors.orange,
+    fontSize: 14,
+    fontFamily: 'RouterMedium'
+
+  }
 });
 
 export default SignInScreen;

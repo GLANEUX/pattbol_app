@@ -1,82 +1,112 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import Swiper from 'react-native-swiper';
-
+import colors from '../../../assets/styles/colors';
+import style from '../../../assets/styles/globalStyles'
 const IntroScreen = ({ navigation }) => {
   return (
     <Swiper
-      style={styles.wrapper}
       loop={false}
       showsPagination={true}
       showsButtons={true}
       paginationStyle={styles.paginationStyle}
       buttonWrapperStyle={styles.buttonWrapperStyle}
       activeDotColor={'orange'}
-      prevButton={<Text style={styles.arrow}>{'<'}</Text>}
-      nextButton={<Text style={styles.arrow}>{'>'}</Text>}
+      prevButton={<Image source={require('../../../assets/img/icon/arrowleft.png')} style={styles.icon} />}
+      nextButton={<Image source={require('../../../assets/img/icon/arrowright.png')} style={styles.icon} />}
       index={0}
     >
-<View style={styles.slide}>
-        <Text style={styles.title}>Titre de la Page 1</Text>
-        <Text style={styles.text}>Description de la Page 1.</Text>
-
-      
-
+      <View style={styles.slide}>
+        <Image source={require('../../../assets/img/logos/logo_Pattbol.png')} style={styles.logo} />
+        <View style={styles.circle}>
+          <Image source={require('../../../assets/img/dogs/dog1.png')} style={styles.dogImage} />
+        </View>
+        <Text style={styles.title}>Bienvenue !</Text>
+        <Text style={styles.text}>Patt’Bol est une appli 100% indépendante qui vous aide à choisir les bons produits</Text>
       </View>
 
       <View style={styles.slide}>
-        <Text style={styles.title}>Titre de la Page 2</Text>
-        <Text style={styles.text}>Description de la Page 2.</Text>
-
-      
+        <Image source={require('../../../assets/img/logos/logo_Pattbol.png')} style={styles.logo} />
+        <View style={styles.circle}>
+          <Image source={require('../../../assets/img/dogs/dog2.png')} style={styles.dogImage} />
+        </View>
+        <Text style={styles.title}>Analyse des produits</Text>
+        <Text style={styles.text}>Patt’Bol scanne vos produits et évalue leur impact sur la santé</Text>
       </View>
 
       <View style={styles.slide}>
-        <Text style={styles.title}>Titre de la Page 3</Text>
-        <Text style={styles.text}>Description de la Page 3.</Text>
-        <Button title="Accéder à la Connexion" onPress={() => navigation.navigate('SignIn')} />
-
+        <Image source={require('../../../assets/img/logos/logo_Pattbol.png')} style={styles.logo} />
+        <View style={styles.circle}>
+          <Image source={require('../../../assets/img/dogs/dog3.png')} style={styles.dogImage} />
+        </View>
+        <Text style={styles.title}>Recommandations</Text>
+        <Text style={styles.text}>Patt’Bol vous recommande de meilleures alternatives</Text>
+        <TouchableOpacity style={style.button} onPress={() => navigation.navigate('Connexion')}>
+        <Text style={style.buttonText}>COMMENCER</Text>
+      </TouchableOpacity>
       </View>
     </Swiper>
   );
 };
-  
+
 const styles = StyleSheet.create({
- wrapper: {},
   paginationStyle: {
     backgroundColor: 'transparent',
   },
   buttonWrapperStyle: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center', 
+    alignItems: 'center',
   },
-  arrow: {
-    fontSize: 24,
-    color: 'orange',
-  },  slide: {
+  icon: {
+    width: 30,
+    height: 30,
+    margin: 20,
+  },
+  slide: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
     padding: 20,
+    position: 'relative',
+  },
+  logo: {
+    position: 'absolute',
+    top: 20,
+    width: 150,
+    height: 50,
+    resizeMode: 'contain',
+  },
+  circle: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    borderWidth: 5,
+    borderColor: colors.orange,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 100, 
+  },
+  dogImage: {
+    width: 150,
+    height: 150,
+    resizeMode: 'contain',
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
+    fontFamily: 'TTMilksScript',
+    fontSize: 30,
+    color: colors.darkgreen,
+    marginTop: 50, 
+    marginBottom:20
+  }, 
   text: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 20,
+    ...style.text,
+
+    marginBottom: 30
   },
 
-  navigation: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
+
 });
 
 export default IntroScreen;

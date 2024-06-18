@@ -1,16 +1,33 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { View, TextInput, Text, Button, StyleSheet, Alert, TouchableOpacity, Modal } from 'react-native';
+import React, { useEffect, useState, useCallback, useLayoutEffect } from 'react';
+import { View, Text, Button, StyleSheet, Alert, TouchableOpacity, Modal, TextInput } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { AuthContext } from '../../hooks/AuthContext';
 import LoadingIndicator from '../../common/LoadingIndicator';
+import { ListItem } from 'react-native-elements';
+import globalStyles from '../../../assets/styles/globalStyles';
+import colors from '../../../assets/styles/colors';
+import { color } from 'react-native-elements/dist/helpers';
 
 const AccountScreen = () => {
   const { authContext, state } = React.useContext(AuthContext);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
-  const navigation = useNavigation();
   const [confirmPassword, setPassword] = useState('');
+  const navigation = useNavigation();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitleStyle: {
+        fontFamily: 'RouterMedium',
+        fontSize: 30,
+        color: colors.darkgreen
+      },
+      headerStyle: {
+        backgroundColor: 'white', // Changer la couleur de fond du header
+      },
+    });
+  }, [navigation]);
 
   const fetchUser = useCallback(async () => {
     if (!state.userToken) {
@@ -43,7 +60,7 @@ const AccountScreen = () => {
 
       if (!userResponse.ok) {
         const errorData = await userResponse.json();
-        throw new Error(errorData.message || errorData.message || 'Failed to fetch user data');
+        throw new Error(errorData.message || 'Failed to fetch user data');
       }
 
       const userData = await userResponse.json();
@@ -94,23 +111,62 @@ const AccountScreen = () => {
           'Authorization': `${state.userToken}`,
         },
         body: JSON.stringify({ confirmPassword }), 
-
       });
 
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Échec de la suppression');
       }
+
       const responseData = await response.json();
-
-      Alert.alert('Utilisateur Supprimer', responseData.message || 'Vous avez supprimer votre compte');
-
+      Alert.alert('Utilisateur Supprimé', responseData.message || 'Vous avez supprimé votre compte');
       authContext.signOut();
     } catch (error) {
       Alert.alert('Erreur', error.message || 'Une erreur s\'est produite. Veuillez réessayer.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const renderUserInfo = () => {
+    return (
+      <View>
+        <ListItem
+                onPress={() => navigation.navigate('EditUserScreen', { userId: user.id })}
+                containerStyle={{ borderTopLeftRadius: 10, borderTopRightRadius: 10}}
+>
+          <ListItem.Content>
+            <ListItem.Title>Nom d'utilisateur:</ListItem.Title>
+            <ListItem.Subtitle>{user.username}</ListItem.Subtitle>
+          </ListItem.Content>
+          <ListItem.Chevron color={colors.darkgreen} />
+
+        </ListItem>
+        <ListItem
+          onPress={() => navigation.navigate('EditUserScreen', { userId: user.id })}
+          containerStyle={{ borderBottomLeftRadius: 10, borderBottomRightRadius: 10, marginBottom:15}}
+>
+          <ListItem.Content>
+            <ListItem.Title>Email:</ListItem.Title>
+            <ListItem.Subtitle>{user.email}</ListItem.Subtitle>
+          </ListItem.Content>
+          <ListItem.Chevron color={colors.darkgreen} />
+
+        </ListItem>
+
+
+
+        <ListItem onPress={() => navigation.navigate('EditPasswordScreen', { userId: user.id })}
+                    containerStyle={{ borderRadius: 10,  marginBottom:15}}
+>
+          <ListItem.Content>
+            <ListItem.Title>Modifier mon mot de passe</ListItem.Title>
+          </ListItem.Content>
+          <ListItem.Chevron color={colors.darkgreen} />
+
+        </ListItem>
+      </View>
+    );
   };
 
   return (
@@ -120,42 +176,50 @@ const AccountScreen = () => {
       ) : (
         user && (
           <View>
-            <TouchableOpacity style={styles.userItem} onPress={() => navigation.navigate('EditUserScreen', { userId: user.id })}>
-              <Text>Username: {user.username}</Text>
-              <Text style={styles.arrow}>V</Text>
+            {renderUserInfo()}
+            <View style={styles.buttonsContainer}>
+
+            <TouchableOpacity style={globalStyles.button} onPress={authContext.signOut}>
+              <Text style={globalStyles.buttonText}>Déconnexion</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.userItem} onPress={() => navigation.navigate('EditUserScreen', { userId: user.id })}>
-              <Text>Email: {user.email}</Text>
-              <Text style={styles.arrow}>V</Text>
+            <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
+              <Text style={globalStyles.buttonText}>Supprimer le compte</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.userItem} onPress={() => navigation.navigate('EditPasswordScreen', { userId: user.id })}>
-              <Text>Modifier mon mot de passe</Text>
-              <Text style={styles.arrow}>V</Text>
-            </TouchableOpacity>
+            </View>
           </View>
         )
       )}
-      <Button title="Se déconnecter" onPress={authContext.signOut} />
-      <Button title="Supprimer le compte" onPress={() => setModalVisible(true)} />
 
       <Modal
         visible={modalVisible}
         transparent={true}
         animationType="slide"
       >
-<View style={styles.modalContent}>
-  <Text>Voulez-vous vraiment supprimer votre compte ?</Text>
-  <TextInput
-    placeholder="Mot de passe"
-    value={confirmPassword}
-    onChangeText={setPassword}
-    secureTextEntry
-    style={styles.input}
-  />
-  <Button title="Annuler" onPress={() => setModalVisible(false)} />
-  <Button title="Supprimer le compte" onPress={handleDeleteAccount} />
-</View>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>Voulez-vous vraiment supprimer votre compte ?</Text>
+            <TextInput
+              placeholder="Mot de passe"
+              value={confirmPassword}
+              onChangeText={setPassword}
+              secureTextEntry
+              style={globalStyles.input}
+            />
 
+
+
+<View style={styles.buttonsContainer}>
+
+<TouchableOpacity style={globalStyles.button}onPress={() => setModalVisible(false)}>
+  <Text style={globalStyles.buttonText}>Annuler</Text>
+</TouchableOpacity>
+<TouchableOpacity style={styles.button} onPress={handleDeleteAccount}>
+  <Text style={globalStyles.buttonText}>Supprimer le compte</Text>
+</TouchableOpacity>
+</View>
+            
+          </View>
+        </View>
       </Modal>
     </View>
   );
@@ -165,18 +229,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 16,
+    padding: 25,
+
   },
-  userItem: {
+  button: {
+    ...globalStyles.button,
+
+    backgroundColor: "#FF3838",
+    padding: 16,
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal:20
+  },
+  buttonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    marginTop: 15,
   },
-  arrow: {
-    color: 'gray',
-  },
+
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -184,14 +254,35 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    width: '100%',
     backgroundColor: 'white',
     borderRadius: 10,
     padding: 20,
-    flex: 1, // Ajout de flex: 1
-
+    width: '80%',
     alignItems: 'center',
-    justifyContent: 'center',
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginTop: 16,
+  },
+  modalButton: {
+    padding: 12,
+    borderRadius: 8,
+    width: '45%',
+    alignItems: 'center',
+  },
+  modalButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  deleteButton: {
+    backgroundColor: colors.red,
   },
   input: {
     height: 40,
@@ -200,6 +291,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 12,
     paddingLeft: 8,
+  },
+  arrow: {
+    color: 'gray',
+    fontSize: 16,
   },
 });
 

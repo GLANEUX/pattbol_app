@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../hooks/AuthContext';
 import LoadingIndicator from '../../common/LoadingIndicator';
-
+import globalStyles from '../../../assets/styles/globalStyles';
+import colors from '../../../assets/styles/colors';
 const EditUserScreen = () => {
   const { state } = React.useContext(AuthContext);
   const route = useRoute();
@@ -12,6 +13,23 @@ const EditUserScreen = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(true);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitleAlign: 'center', 
+      headerLeft: () => (
+        <Text onPress={() => navigation.goBack()} style={globalStyles.cancelText}>Annuler</Text>
+      ),
+      headerTitleStyle: {
+        fontFamily: 'RouterMedium', 
+        color: colors.darkgreen
+            },
+            headerStyle: {
+              backgroundColor: colors.lightgrey, // Changer la couleur de fond du header
+            },
+    });
+  }, [navigation]);
+
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -71,24 +89,30 @@ const EditUserScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={globalStyles.container}>
       {loading ? (
         <LoadingIndicator />
       ) : (
         <>
-          <TextInput
+        <TextInput
             placeholder="Pseudo"
             value={username}
             onChangeText={setUsername}
-            style={styles.input}
-          />
-          <TextInput
+        style={globalStyles.input}
+        placeholderTextColor={colors.darkgrey}
+
+      />
+        <TextInput
             placeholder="Email"
             value={email}
             onChangeText={setEmail}
-            style={styles.input}
-          />
-          <Button title="Mettre à jour" onPress={handleUpdateUser} />
+        style={globalStyles.input}
+        placeholderTextColor={colors.darkgrey}
+
+      />
+      <TouchableOpacity style={styles.button} onPress={handleUpdateUser}>
+        <Text style={globalStyles.buttonText}>Mettre à jour</Text>
+      </TouchableOpacity>
         </>
       )}
     </View>
@@ -96,18 +120,13 @@ const EditUserScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 16,
-  },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 12,
-    paddingLeft: 8,
-  },
+  button:{
+    ...globalStyles.button,
+    marginTop:15,
+    paddingHorizontal:0,
+    width: '75%'
+  },   
+
 });
 
 export default EditUserScreen;

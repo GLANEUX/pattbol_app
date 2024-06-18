@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import React, { useState, useLayoutEffect } from 'react';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../hooks/AuthContext';
 import LoadingIndicator from '../../common/LoadingIndicator';
-
+import globalStyles from '../../../assets/styles/globalStyles';
+import colors from '../../../assets/styles/colors';
 const EditPasswordScreen = () => {
   const { state } = React.useContext(AuthContext);
   const navigation = useNavigation();
@@ -13,6 +14,21 @@ const EditPasswordScreen = () => {
   const [loading, setLoading] = useState(false);
   const route = useRoute();
   const { userId } = route.params;
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitleAlign: 'center', 
+      headerLeft: () => (
+        <Text onPress={() => navigation.goBack()} style={globalStyles.cancelText}>Annuler</Text>
+      ),
+      headerTitleStyle: {
+        fontFamily: 'RouterMedium', 
+        color: colors.darkgreen
+            },
+            headerStyle: {
+              backgroundColor: colors.lightgrey, // Changer la couleur de fond du header
+            },
+    });
+  }, [navigation]);
 
   const handleUpdatePassword = async () => {
 
@@ -45,33 +61,45 @@ const EditPasswordScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={globalStyles.container}>
       {loading ? (
         <LoadingIndicator />
       ) : (
         <>
-          <TextInput
-            placeholder="Mot de passe actuel"
-            value={currentPassword}
-            onChangeText={setCurrentPassword}
-            secureTextEntry
-            style={styles.input}
-          />
-          <TextInput
+
+
+
+<TextInput
+        placeholder="Mot de passe actuel"
+        value={currentPassword}
+        onChangeText={setCurrentPassword}
+        secureTextEntry
+        style={globalStyles.input}
+        placeholderTextColor={colors.darkgrey}
+
+      />
+      <TextInput
             placeholder="Nouveau mot de passe"
             value={newPassword}
             onChangeText={setNewPassword}
             secureTextEntry
-            style={styles.input}
-          />
-          <TextInput
+        style={globalStyles.input}
+        placeholderTextColor={colors.darkgrey}
+
+      />
+      <TextInput
             placeholder="Confirmer le nouveau mot de passe"
             value={confirmPassword}
             onChangeText={setConfirmPassword}
             secureTextEntry
-            style={styles.input}
-          />
-          <Button title="Mettre à jour le mot de passe" onPress={handleUpdatePassword} />
+        style={globalStyles.input}
+        placeholderTextColor={colors.darkgrey}
+
+      />
+      <TouchableOpacity style={styles.button} onPress={handleUpdatePassword}>
+        <Text style={globalStyles.buttonText}>Mettre à jour le mot de passe</Text>
+      </TouchableOpacity>
+
         </>
       )}
     </View>
@@ -79,18 +107,14 @@ const EditPasswordScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 16,
-  },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 12,
-    paddingLeft: 8,
-  },
+  button:{
+    ...globalStyles.button,
+    marginTop:15,
+    paddingHorizontal:0,
+    width: '75%'
+  },   
+
+
 });
 
 export default EditPasswordScreen;

@@ -1,15 +1,44 @@
-import React from 'react';
+import React, {  useLayoutEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import globalStyles from '../../../assets/styles/globalStyles';
+import colors from '../../../assets/styles/colors';
+import defaultImage from '../../../assets/img/dogs/dog2.png';
 
 const CategoryProductsScreen = ({ route }) => {
   const { category, products } = route.params;
   const navigation = useNavigation();
 
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitleAlign: 'center', 
+      headerLeft: () => (
+        <Text onPress={() => navigation.goBack()} style={globalStyles.cancelText}>Annuler</Text>
+      ),
+      headerTitleStyle: {
+        fontFamily: 'RouterMedium', 
+        color: colors.darkgreen
+            },
+            headerStyle: {
+              backgroundColor: colors.lightgrey, // Changer la couleur de fond du header
+            },
+    });
+  }, [navigation]);
+
+
   const renderItem = ({ item }) => (
-    <TouchableOpacity style={styles.itemContainer} onPress={() => navigation.navigate('ProductDetailScreen', { productId: item.id })}>
-      <Text style={styles.itemTitle}>{item.title}</Text>
-      {item.picture && <Image source={{ uri: item.picture }} style={styles.image} />}
+    <TouchableOpacity style={globalStyles.listContainer} onPress={() => navigation.navigate('ProductDetailScreen', { productId: item.id })}>
+      <View style={globalStyles.listItem}>
+      <Image
+  source={item.picture ? { uri: item.picture } : defaultImage}
+  style={globalStyles.imageItem}
+/>
+        <View style={globalStyles.detailsContainer}>
+          <Text style={globalStyles.titleItem}>{item.title}</Text>
+          <Text style={globalStyles.description}>{item.brand} - {item.quantity} {item.quantityUnit}</Text>
+        </View>
+      </View>
     </TouchableOpacity>
   );
 
@@ -20,6 +49,8 @@ const CategoryProductsScreen = ({ route }) => {
         data={products}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
+        style={globalStyles.flatlist}
+
       />
     </View>
   );

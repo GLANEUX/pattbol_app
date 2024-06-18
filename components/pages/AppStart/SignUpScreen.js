@@ -1,9 +1,10 @@
-import React, { useState, useLayoutEffect  } from 'react';
-import { View, TextInput, Button, StyleSheet, Text, Alert } from 'react-native';
+import React, { useState, useLayoutEffect } from 'react';
+import { View, TextInput, TouchableOpacity, StyleSheet, Text, Alert } from 'react-native';
 import { AuthContext } from '../../hooks/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import LoadingIndicator from '../../common/LoadingIndicator';
-
+import globalStyles from '../../../assets/styles/globalStyles';
+import colors from '../../../assets/styles/colors';
 const SignUpScreen = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -16,12 +17,17 @@ const SignUpScreen = () => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitleAlign: 'center', // Aligner le titre au centre
+      headerTitleAlign: 'center', 
       headerLeft: () => (
-        <Text onPress={() => navigation.goBack()} style={styles.cancelText}>Annuler</Text>
+        <Text onPress={() => navigation.goBack()} style={globalStyles.cancelText}>Annuler</Text>
       ),
+      headerTitleStyle: {
+        fontFamily: 'RouterMedium', 
+        color: colors.darkgreen, 
+      },
     });
   }, [navigation]);
+  
 
 
 
@@ -37,67 +43,76 @@ const SignUpScreen = () => {
     }
     setLoading(false);
   };
-  
+
 
   return (
-    <View style={styles.container}>
+    <View style={globalStyles.container}>
       <TextInput
         placeholder="Pseudo"
         value={username}
         onChangeText={setUsername}
-        style={styles.input}
+        style={globalStyles.input}
+        placeholderTextColor={colors.darkgrey}
+
       />
       <TextInput
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
-        style={styles.input}
+        style={globalStyles.input}
+        placeholderTextColor={colors.darkgrey}
+
       />
       <TextInput
         placeholder="Mot de passe"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        style={styles.input}
+        style={globalStyles.input}
+        placeholderTextColor={colors.darkgrey}
+
       />
-            <TextInput
+      <TextInput
         placeholder="Mot de passe"
         value={confirmPassword}
         onChangeText={setConfirmPassword}
         secureTextEntry
-        style={styles.input}
+        style={globalStyles.input}
+        placeholderTextColor={colors.darkgrey}
+
       />
-      <Button title="S'inscrire" onPress={handleSignUp} />
+      <TouchableOpacity style={styles.button} onPress={handleSignUp}>
+        <Text style={globalStyles.buttonText}>S'inscrire</Text>
+      </TouchableOpacity>
       {loading && <LoadingIndicator />}
-      <Text style={styles.text}>
-        Vous avez déjà un compte ?
-        <Text style={{ color: 'blue' }} onPress={() => navigation.navigate('SignIn')}> Connectez-vous ici </Text>
-      </Text>
+      <Text style={styles.text}>Vous avez déjà un compte ?</Text>
+      <Text style={styles.textlink} onPress={() => navigation.navigate('Connexion')}>Connectez-vous</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 16,
+  button: {
+    ...globalStyles.button,
+    marginTop: 15,
+    paddingHorizontal: 0,
+    width: '75%'
   },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 12,
-    paddingLeft: 8,
-  },
+
   text: {
     marginTop: 16,
     textAlign: 'center',
+    fontFamily: 'RouterMedium',
+    fontSize: 14,
+    textAlignVertical: 'center',
+    color: colors.darkgrey
   },
-  cancelText: {
-    marginLeft: 16, // Ajouter de l'espace à gauche
-    color: 'orange', // Couleur orange
-  },
-});
 
+  textlink: {
+    color: colors.orange,
+    fontSize: 14,
+    fontFamily: 'RouterMedium'
+
+  }
+});
 export default SignUpScreen;

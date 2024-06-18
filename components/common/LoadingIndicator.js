@@ -25,7 +25,7 @@ const LoadingIndicator = () => {
   return (
     <View style={styles.overlay}>
       <Animated.View style={{ transform: [{ rotate }] }}>
-        <Image source={require('../../assets/favicon.png')} style={{ width: 100, height: 100, resizeMode: 'contain' }} />
+        <Image source={require('../../assets/img/logos/icon.png')} style={{ width: 100, height: 100, resizeMode: 'contain' }} />
       </Animated.View>
     </View>
   );

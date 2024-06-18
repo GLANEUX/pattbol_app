@@ -1,12 +1,28 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
+import React, { useEffect, useState, useContext, useLayoutEffect } from 'react';
+import { View, Text, StyleSheet, Alert } from 'react-native';
+import { ListItem } from 'react-native-elements';
 import { AuthContext } from '../../hooks/AuthContext';
 import { useNavigation } from '@react-navigation/native';
+import globalStyles from '../../../assets/styles/globalStyles';
+import colors from '../../../assets/styles/colors';
 
 const CategoryListScreen = () => {
   const { state } = useContext(AuthContext);
   const [categories, setCategories] = useState([]);
   const navigation = useNavigation();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitleStyle: {
+        fontFamily: 'RouterMedium',
+        fontSize: 30,
+        color: colors.darkgreen,
+      },
+      headerStyle: {
+        backgroundColor: colors.lightgrey,
+      },
+    });
+  }, [navigation]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -34,7 +50,7 @@ const CategoryListScreen = () => {
     fetchCategories();
   }, [state.userToken]);
 
-  const navigateToCategoryProducts = async (category) => {
+  const navigateToCategoryProducts = async (category = '') => {
     try {
       const response = await fetch(`https://api.pattbol.fr/products/category/${category}`, {
         method: 'GET',
@@ -56,20 +72,25 @@ const CategoryListScreen = () => {
     }
   };
 
-  const renderItem = ({ item }) => (
-    <TouchableOpacity style={styles.itemContainer} onPress={() => navigateToCategoryProducts(item)}>
-      <Text style={styles.itemText}>{item}</Text>
-    </TouchableOpacity>
-  );
-
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Categories</Text>
-      <FlatList
-        data={categories}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={renderItem}
-      />
+      {categories.map((category, index) => (
+        <ListItem
+          key={index}
+          containerStyle={[
+            styles.itemContainer,
+            index === 0 && { borderTopLeftRadius: 10, borderTopRightRadius: 10 },
+            index === categories.length - 1 && { borderBottomLeftRadius: 10, borderBottomRightRadius: 10 },
+          ]}
+          onPress={() => navigateToCategoryProducts(category)}
+          bottomDivider={index !== categories.length - 1} // Ajout de bottomDivider uniquement sur tous les items sauf le dernier
+        >
+          <ListItem.Content>
+            <ListItem.Title style={styles.itemText}>{category}</ListItem.Title>
+          </ListItem.Content>
+          <ListItem.Chevron color={colors.darkgreen} />
+        </ListItem>
+      ))}
     </View>
   );
 };
@@ -77,19 +98,15 @@ const CategoryListScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-  },
-  heading: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
+    padding: 10,
+    margin: 20,
   },
   itemContainer: {
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    backgroundColor: 'white',
+    borderRadius: 0, // Aucun border radius par défaut
   },
   itemText: {
+    fontFamily: 'RouterMedium',
     fontSize: 18,
   },
 });

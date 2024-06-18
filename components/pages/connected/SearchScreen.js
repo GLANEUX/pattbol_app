@@ -1,84 +1,174 @@
-import React, {  useState } from 'react';
-import { View, TextInput, Button, FlatList, Text, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
+import React, { useState, useEffect, useLayoutEffect, useContext, useRef } from 'react';
+import { View, FlatList, Text, TouchableOpacity, StyleSheet, Image, TextInput } from 'react-native';
 import { AuthContext } from '../../hooks/AuthContext';
-import LoadingIndicator from '../../common/LoadingIndicator';
 import { useNavigation } from '@react-navigation/native';
+import { SearchBar } from 'react-native-elements';
+import globalStyles from '../../../assets/styles/globalStyles';
+import colors from '../../../assets/styles/colors';
+import defaultImage from '../../../assets/img/dogs/dog2.png';
 
 const SearchScreen = () => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
-  const { state } = React.useContext(AuthContext);
+  const { state } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
+  const [initialSearch, setInitialSearch] = useState(true);
+  const [introuvable, setIntrouvable] = useState(false);
   const navigation = useNavigation();
+  const searchInputRef = useRef(null); // Référence pour l'input de recherche
 
-  const handleSearch = async () => {
+
+  
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitleStyle: {
+        fontFamily: 'RouterMedium',
+        fontSize: 30,
+        color: colors.darkgreen,
+      },
+      headerStyle: {
+        backgroundColor: 'white',
+      },
+    });
+  }, [navigation]);
+
+  const handleSearch = async (searchQuery) => {
+    setQuery(searchQuery); 
+
+    if (!searchQuery.trim()) {
+      setResults([]);
+      setInitialSearch(true);
+      return;
+    }
+
     setLoading(true);
-    if(query < 2){
-      Alert.alert('Error', 'Vous devez entrez plus de 2 caractère');
-      setLoading(false);
-      return;
-    }
-
+    setInitialSearch(false);
     try {
+      if (!state.userToken) {
+        return;
+      }
 
-
-    if (!state.userToken) {
-      return;
-    }
-
-   
-      const response = await fetch(`https://api.pattbol.fr/products/search/${query}`, {
+      const response = await fetch(`https://api.pattbol.fr/products/search/${searchQuery}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `${state.userToken}`,
-
         },
       });
 
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Failed to fetch search results');
-        
       }
 
       const searchData = await response.json();
       setResults(searchData.searchResult);
+      setIntrouvable(false);
+
     } catch (error) {
-      Alert.alert('Error', error.message || 'An error occurred. Please try again.');
-    }  finally {
+      setResults([]);
+      setIntrouvable(true);
+    } finally {
       setLoading(false);
     }
   };
 
   const renderItem = ({ item }) => (
-    <View style={styles.resultItem}>
-      <Text style={styles.title}>{item.title}</Text>
-      <Text>{item.brand}</Text>
-      <Text>{item.quantity} {item.quantityUnit}</Text>
-      <Text>Rate: {item.rate}</Text>
-      <Text>{item.statut}</Text>
-      <TouchableOpacity onPress={() => navigation.navigate('ProductDetailScreen', { productId: item.id })}>
-        <Text style={styles.link}>More Info</Text>
-      </TouchableOpacity>
-      {item.picture && <Image source={{ uri: item.picture }} style={styles.image} />}
-    </View>
+    <TouchableOpacity style={globalStyles.listContainer} onPress={() => navigation.navigate('ProductDetailScreen', { productId: item.id })}>
+      <View style={globalStyles.listItem}>
+        <Image
+          source={item.picture ? { uri: item.picture } : defaultImage}
+          style={globalStyles.imageItem}
+        />
+        <View style={globalStyles.detailsContainer}>
+          <Text style={globalStyles.titleItem}>{item.title}</Text>
+          <Text style={globalStyles.description}>{item.brand} - {item.quantity} {item.quantityUnit}</Text>
+        </View>
+      </View>
+    </TouchableOpacity>
   );
+
+
+
+
+
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder="Search products..."
-        value={query}
-        onChangeText={setQuery}
-      />
-      <Button title="Search" onPress={handleSearch} />
-      <FlatList
-        data={results}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderItem}
-      />
+      <View style={styles.searchBarContainer}>
+        <SearchBar
+          ref={searchInputRef} // Attacher la référence à l'input de recherche
+          placeholder="Rechercher..."
+          lightTheme
+          autoCorrect={false}
+          onChangeText={handleSearch}
+          value={query}
+          showLoading={loading}
+          platform="android"
+          containerStyle={{
+            backgroundColor: 'transparent',
+            borderBottomColor: 'transparent',
+            borderTopColor: 'transparent',
+            padding: 0,
+            margin: 10,
+          }}
+          inputContainerStyle={{
+            backgroundColor: colors.lightgrey,
+            borderBottomColor: 'transparent',
+            borderTopColor: 'transparent',
+            paddingVertical: 0,
+            borderRadius: 10,
+            elevation: 3
+          }}
+          inputStyle={{
+            color: colors.darkgrey,
+            fontFamily: 'RouterMedium'
+          }}
+          cancelButtonStyle={{
+            width: 50,
+          }}
+          loadingProps={{ color: colors.orange }}
+          cancelButtonColor={colors.darkgrey}
+          clearIcon={{ color: colors.darkgrey }}
+        />
+      </View>
+
+      {query.trim() !== '' && !loading && (
+        <>
+          {results.length === 0 && !initialSearch && (
+            <View style={styles.noResults}>
+              <Image source={require('../../../assets/img/dogs/dog4.png')} />
+              <Text style={styles.title}>AUCUN PRODUIT</Text>
+              <Text style={styles.text}>Réessayer ou tentez de scanner un produit</Text>
+              <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Recherche')}>
+                <Text style={globalStyles.buttonText}>Scanner un produit</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          {results.length !== 0 && !initialSearch && (
+            <FlatList
+              data={results}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={renderItem}
+              style={globalStyles.flatlist}
+            />
+          )}
+        </>
+      )}
+
+      {initialSearch && (
+        <View style={styles.initialContainer}>
+          <View style={styles.initialBox}>
+            <Text style={styles.initialTitle}>RECHERCHE</Text>
+            <Text style={styles.initialSubtitle}>Recherchez n'importe quel produit</Text>
+            <Text style={globalStyles.text}>Plus de 5 000 produits alimentaires & accessoires pour animaux disponibles.</Text>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Scanner')}>
+              <Text style={globalStyles.buttonText}>SCANNEZ ICI</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
     </View>
   );
 };
@@ -86,32 +176,61 @@ const SearchScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    backgroundColor: "white",
+    alignItems: 'flex-start', // Aligner le contenu en haut
+    paddingHorizontal: 16,
   },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 12,
-    paddingLeft: 8,
+  searchBarContainer: {
+    alignSelf: 'stretch', // S'étend sur toute la largeur
+    marginTop: 10,
+    marginBottom: 10,
   },
-  resultItem: {
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+  initialContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  initialBox: {
+    backgroundColor: colors.lightgrey,
+    paddingHorizontal: 30,
+    paddingVertical: 15,
+    marginHorizontal: 5,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  initialTitle: {
+    fontFamily: 'RouterMedium',
+    fontSize: 13,
+    color: colors.orange,
+    marginBottom: 10,
+  },
+  initialSubtitle: {
+    fontFamily: 'RouterMedium',
+    textAlign: 'center',
+    fontSize: 25,
+    marginBottom: 10,
+  },
+  text: {
+    ...globalStyles.text,
+    marginBottom: 20,
+  },
+  button: {
+    ...globalStyles.button,
+    marginTop: 15,
+    paddingVertical: 7,
+  },
+  noResults: {
+    alignSelf: 'stretch', // S'étend sur toute la largeur
+
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  link: {
-    color: 'blue',
-    textDecorationLine: 'underline',
-  },
-  image: {
-    width: 100,
-    height: 100,
-    marginTop: 8,
+    fontSize: 30,
+    fontFamily: 'RouterMedium',
+    marginBottom: 5,
+    marginTop: 30,
   },
 });
 
