@@ -47,9 +47,9 @@ const ProductDetailScreen = ({ route }) => {
         }
 
         const productData = await response.json();
-        setProduct(productData.product); // Update here to access the correct part of the response
+        setProduct(productData.product);
       } catch (error) {
-        Alert.alert('Error', error.message || 'An error occurred. Please try again.');
+        Alert.alert('Erreur', error.message || 'Une erreur s\'est produite. Veuillez réessayer.');
       }
     };
 
@@ -58,7 +58,7 @@ const ProductDetailScreen = ({ route }) => {
 
   if (!product) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={styles.loadingContainer}>
         <LoadingIndicator />
       </View>
     );
@@ -74,30 +74,27 @@ const ProductDetailScreen = ({ route }) => {
 
   const sections = [
     {
-      title: 'Product Details',
       data: [
         {
           key: 'details',
           render: () => (
-            <View style={globalStyles.listContainer}>
-              <View style={globalStyles.listItem}>
-                <Image
-                  source={product.picture ? { uri: product.picture } : defaultImage}
-                  style={globalStyles.imageItem}
-                />
-                <View style={globalStyles.detailsContainer}>
-                  <Text style={globalStyles.titleItem}>{product.title}</Text>
-                  <Text style={globalStyles.description}>{product.brand} - {product.quantity} {product.quantityUnit}</Text>
-                  <Image source={rateImages[product.rate - 1]} style={styles.rateImage} />
-                </View>
+            <View style={styles.productContainer}>
+              <Image
+                source={product.picture ? { uri: product.picture } : defaultImage}
+                style={styles.productImage}
+              />
+              <View style={styles.productDetails}>
+                <Text style={styles.productTitle}>{product.title}</Text>
+                <Text style={styles.productDescription}>{product.brand} - {product.quantity} {product.quantityUnit}</Text>
               </View>
+              <Image source={rateImages[product.rate - 1]} style={styles.rateImage} />
             </View>
           )
         }
       ]
     },
     {
-      title: 'Nutritional Information',
+      title: 'Informations nutritionnelles',
       data: product.nutricionalInformations.map(info => ({
         key: info.id.toString(),
         render: () => (
@@ -108,14 +105,14 @@ const ProductDetailScreen = ({ route }) => {
       }))
     },
     {
-      title: 'Additional Details',
+      title: 'Détails supplémentaires',
       data: [
-        { label: 'Bar Code', value: product.barCode },
-        { label: 'Conditioning', value: product.conditioning },
-        { label: 'Ingredients List', value: product.ingredientsList },
-        { label: 'Added Vitamins', value: product.addedVitamins },
-        { label: 'Added Minerals', value: product.addedMinerals },
-      ].map((item, index) => ({
+        { label: 'Code-barres', value: product.barCode },
+        { label: 'Conditionnement', value: product.conditioning },
+        { label: 'Liste des ingrédients', value: product.ingredientsList },
+        { label: 'Vitamines ajoutées', value: product.addedVitamins },
+        { label: 'Minéraux ajoutés', value: product.addedMinerals },
+      ].filter(item => item.value).map((item, index) => ({
         key: index.toString(),
         render: () => (
           <View style={styles.detailItem}>
@@ -131,16 +128,8 @@ const ProductDetailScreen = ({ route }) => {
       sections={sections}
       keyExtractor={(item, index) => item.key}
       renderItem={({ item }) => item.render()}
-      renderSectionHeader={({ section: { title } }) => (
-        <View style={styles.section}>
-          <Text style={styles.title}>{title}</Text>
-        </View>
-      )}
-      ListFooterComponent={() => (
-        <TouchableOpacity onPress={() => Linking.openURL(product.link)}>
-          <Text style={[styles.link, { alignSelf: 'center' }]}>More Info</Text>
-        </TouchableOpacity>
-      )}
+
+
       style={styles.container}
     />
   );
@@ -152,64 +141,76 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#ffffff',
   },
-  section: {
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 12,
-    color: colors.darkgreen,
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 8,
-  },
-  imageContainer: {
-    width: '100%',
-    height: 300,
-    marginBottom: 16,
+  loadingContainer: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-    overflow: 'hidden',
   },
-  image: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'contain',
-  },
-  detailsContainer: {
-    flex: 1,
-    marginLeft: 16,
-  },
-  rateContainer: {
-    flexDirection: 'row',
+
+
+  productContainer: {
+    flexDirection: 'column',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 16,
+    backgroundColor: colors.lightgrey,
+    borderRadius: 10,
+    padding: 16,
+    paddingBottom: 0,
+    elevation: 2,
+  },
+  productImage: {
+    width: 150,
+    height: 150,
+    resizeMode: 'contain',
+    borderRadius: 8,
+    marginBottom: 12,
+  },
+
+  productTitle: {
+    fontSize: 25,
+    textAlign: "center",
+    color: colors.darkgreen,
+    marginBottom: 4,
+    fontFamily: "TTMilksScript"
+  },
+  productDescription: {
+    fontSize: 16,
+    color: colors.gray,
+    textAlign: 'center',
+    fontFamily: "Router"
+
   },
   rateImage: {
-    width: 300,
-    marginLeft: 8,
+    width: 200,
     resizeMode: 'contain',
   },
   nutritionContainer: {
-    marginBottom: 4,
+    marginBottom: 8,
+    backgroundColor: '#f1f1f1',
+    padding: 10,
+    borderRadius: 8,
   },
   nutritionLabel: {
     fontSize: 16,
-    marginBottom: 4,
-  },
-  link: {
-    color: 'blue',
-    textDecorationLine: 'underline',
-    fontSize: 16,
-    marginTop: 8,
+    color: colors.darkgrey,
+    fontFamily: "Router"
+
   },
   detailItem: {
     marginBottom: 8,
+    backgroundColor: '#f1f1f1',
+    padding: 10,
+    borderRadius: 8,
+    fontFamily: "Router"
+
   },
+  label: {
+    fontSize: 16,
+    color: colors.darkgrey,
+    fontFamily: "Router"
+
+  },
+
 });
 
 export default ProductDetailScreen;

@@ -128,6 +128,8 @@ const styles = StyleSheet.create({
   },
   popup: {
     position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
     bottom: 20,
     left: 20,
     right: 20,
